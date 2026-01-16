@@ -33,13 +33,13 @@ export default function Hero() {
   useEffect(() => {
     let loaded = 0;
     allImages.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = () => {
+      const imgPreload = new window.Image(); // ⚡ use window.Image to avoid conflict
+      imgPreload.src = src;
+      imgPreload.onload = () => {
         loaded += 1;
         setProgress(Math.floor((loaded / allImages.length) * 100));
         if (loaded === allImages.length) {
-          setTimeout(() => setLoading(false), 300); // small delay for smooth transition
+          setTimeout(() => setLoading(false), 300);
         }
       };
     });
