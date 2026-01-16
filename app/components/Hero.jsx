@@ -162,7 +162,7 @@ export default function Hero() {
               exit={{ opacity: 0 }}
               className="flex flex-col items-center gap-6"
             >
-              <h2 className="font-[cursive] text-4xl text-pink-600 text-center">
+              <h2 className=" text-4xl text-pink-600 text-center">
                 Will you be my <span className="uppercase">girlfriend</span>? 💕
               </h2>
 
@@ -205,9 +205,7 @@ export default function Hero() {
               animate={{ opacity: 1, scale: 1 }}
               className="flex flex-col items-center gap-6"
             >
-              <h2 className="font-[cursive] text-5xl text-pink-700">
-                Yaaay!!! 🎀💖
-              </h2>
+              <h2 className=" text-5xl text-pink-700">Yaaay!!! 🎀💖</h2>
 
               <Image
                 src="/a2.jpg"
