@@ -205,7 +205,7 @@ export default function Hero() {
               animate={{ opacity: 1, scale: 1 }}
               className="flex flex-col items-center gap-6"
             >
-              <h2 className=" text-5xl text-pink-700">Yaaay!!! 🎀💖</h2>
+              <h2 className=" text-5xl text-pink-700">YAAAAAY!!! 🎀💖</h2>
 
               <Image
                 src="/a2.jpg"
