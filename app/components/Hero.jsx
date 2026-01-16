@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
-// 🔁 Background images (put them in /public)
+// 🔁 Background images
 const backgrounds = [
   "/bg1.webp",
   "/bg2.webp",
@@ -12,18 +13,46 @@ const backgrounds = [
   "/bg5.webp",
 ];
 
+// 🐱 Hello Kitty images
+const cornerImages = ["/ht1.png", "/ht2.png", "/hb1.png", "/hb2.png"];
+
+// Other images used in content
+const contentImages = ["/hk.png", "/a1.jpg", "/a2.jpg"];
+
+const allImages = [...backgrounds, ...cornerImages, ...contentImages];
+
 export default function Hero() {
   const [bgIndex, setBgIndex] = useState(0);
   const [step, setStep] = useState("intro");
   const [noPos, setNoPos] = useState({ x: 0, y: 0 });
 
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  // Preload all images
+  useEffect(() => {
+    let loaded = 0;
+    allImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => {
+        loaded += 1;
+        setProgress(Math.floor((loaded / allImages.length) * 100));
+        if (loaded === allImages.length) {
+          setTimeout(() => setLoading(false), 300); // small delay for smooth transition
+        }
+      };
+    });
+  }, []);
+
   // Background slideshow (every 1s)
   useEffect(() => {
+    if (loading) return; // do not start slideshow until loaded
     const interval = setInterval(() => {
       setBgIndex((prev) => (prev + 1) % backgrounds.length);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [loading]);
 
   // Move NO button randomly
   const moveNoButton = () => {
@@ -35,9 +64,24 @@ export default function Hero() {
   // Handle mobile tap
   const handleNoClick = () => {
     if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
-      moveNoButton(); // teleport to a new random position
+      moveNoButton();
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-pink-200/80">
+        <Image
+          src="/hk.png" // your loading image
+          alt="loading"
+          width={100}
+          height={100}
+          className="animate-pulse"
+        />
+        <p className="mt-4 text-pink-700 text-xl font-bold">{progress}%</p>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-screen w-full overflow-hidden border-7 border-pink-200">
@@ -58,10 +102,34 @@ export default function Hero() {
       <div className="absolute inset-0 bg-pink-200/20" />
 
       {/* 🐱 Hello Kitty corner images */}
-      <img src="/ht1.png" className="absolute top-0 left-0 h-35 w-35" />
-      <img src="/ht2.png" className="absolute top-0 right-0 h-35 w-35" />
-      <img src="/hb1.png" className="absolute bottom-0 left-0 h-35 w-35" />
-      <img src="/hb2.png" className="absolute bottom-0 right-0 h-35 w-35" />
+      <Image
+        src="/ht1.png"
+        width={140}
+        height={140}
+        alt="ht1"
+        className="absolute top-0 left-0"
+      />
+      <Image
+        src="/ht2.png"
+        width={140}
+        height={140}
+        alt="ht2"
+        className="absolute top-0 right-0"
+      />
+      <Image
+        src="/hb1.png"
+        width={140}
+        height={140}
+        alt="hb1"
+        className="absolute bottom-0 left-0"
+      />
+      <Image
+        src="/hb2.png"
+        width={140}
+        height={140}
+        alt="hb2"
+        className="absolute bottom-0 right-0"
+      />
 
       {/* 💖 Content */}
       <div className="relative z-10 flex h-full items-center justify-center">
@@ -78,9 +146,9 @@ export default function Hero() {
                 onClick={() => setStep("question")}
                 className="flex cursor-pointer items-center gap-2 rounded-xl border border-white px-10 py-4 text-white font-light shadow-sm"
               >
-                <img src="/hk.png" alt="icon" className="w-6 h-6" />
+                <Image src="/hk.png" width={24} height={24} alt="icon" />
                 Click me to see the last reason
-                <img src="/hk.png" alt="icon" className="w-6 h-6" />
+                <Image src="/hk.png" width={24} height={24} alt="icon" />
               </button>
             </motion.div>
           )}
@@ -98,9 +166,11 @@ export default function Hero() {
                 Will you be my <span className="uppercase">girlfriend</span>? 💕
               </h2>
 
-              <img
+              <Image
                 src="/a1.jpg"
                 alt="question"
+                width={256}
+                height={256}
                 className="h-64 w-64 rounded-2xl border border-pink-200 object-cover shadow-xl"
               />
 
@@ -117,8 +187,8 @@ export default function Hero() {
                 <motion.button
                   animate={{ x: noPos.x, y: noPos.y }}
                   transition={{ type: "spring", stiffness: 300 }}
-                  onMouseEnter={moveNoButton} // desktop hover
-                  onClick={handleNoClick} // mobile tap
+                  onMouseEnter={moveNoButton}
+                  onClick={handleNoClick}
                   className="rounded-full bg-gray-300 px-6 py-3 text-gray-700 shadow-lg"
                 >
                   No 🙈
@@ -139,9 +209,11 @@ export default function Hero() {
                 Yaaay!!! 🎀💖
               </h2>
 
-              <img
+              <Image
                 src="/a2.jpg"
                 alt="yes"
+                width={256}
+                height={256}
                 className="h-64 w-64 rounded-2xl border border-pink-200 object-cover shadow-xl"
               />
             </motion.div>
